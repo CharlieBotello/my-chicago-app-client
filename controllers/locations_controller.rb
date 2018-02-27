@@ -1,18 +1,36 @@
-module ProductsController
-  def product_index_action
+module LocationsController
+  def locations_index_action
     response = Unirest.get("http://localhost:3000/locations")
     locations = response.body 
     puts JSON.pretty_generate(locations) 
   end
-  def products_show_action
+  def locations_show_action
     print "Enter a location id: "
     input_id = gets.chomp
     response = Unirest.get("http://localhost:3000/locations/#{input_id}")
     location = response.body
     puts JSON.pretty_generate(location)
 
+    puts "Press enter to continue or type 'o' to add the location to your planner"
+
+    user_choice = gets.chomp
+    if user_choice == 'o'
+      print "Enter a start date to add to your planner (example January, 31 2017 12:30pm): "
+      input_start = gets.chomp
+      print "Enter an end time to your planner (example January, 31 2017 2:30pm): "
+      input_end = gets.chomp
+
+      client_params = {
+                        start_time: input_start,
+                        end_time: input_end,
+                        location_id: input_id
+                      }
+      response_data = Unirest.post("http://localhost:3000/user_locations",  client_params)
+      puts JSON.pretty_generate(response_data)
+    end
   end
-  def products_create_action
+
+  def locations_create_action
     puts "Enter the following information to create a location"
     client_params = {}
     
@@ -35,6 +53,7 @@ module ProductsController
                                                               parameters: client_params
 
                             )
+    # response = Unirest.post("http://localhost:3000/locations", parameters: client_params)
     if response.code == 200
       location = response.body 
       puts JSON.pretty_generate(location)
@@ -48,7 +67,7 @@ module ProductsController
       end 
     end
   end
-  def products_update_action
+  def locations_update_action
     puts 'Please enter an id: '
     input_id = gets.chomp
     response = Unirest.get("http://localhost:3000/locations/#{input_id}")
@@ -90,14 +109,14 @@ module ProductsController
       end 
     end 
   end
-  def products_destroy_action
+  def locations_destroy_action
     print "Enter recipe Id: "
     input_id = gets.chomp
     response = Unirest.delete("http://localhost:3000/locations/#{input_id}")
     data = response.body
     puts data["message"]
   end
-  def products_search_action
+  def loacations_search_action
     print "Enter a search term: "
     search_term = gets.chomp
     response = Unirest.get("http://localhost:3000/locations/?search=#{search_term}")

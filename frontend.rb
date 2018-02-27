@@ -2,7 +2,7 @@ require 'unirest'
 require 'paint'
 require_relative 'controllers/products_controller'
 class Frontend
-  include ProductsController
+  include LocationsController
   def run 
  
     while true 
@@ -19,6 +19,8 @@ class Frontend
       puts "          [3] Create a location "
       puts "          [4] Update a location "
       puts "          [5] Destroy a location "
+      puts "          [6] Show all User Locations "
+
       puts
       puts "          [signup] Signup to (create a user) "
       puts "          [login] Login (ceate JSON web token)"
@@ -28,6 +30,7 @@ class Frontend
       puts "          [q] Enter 'q' to quit "
 
 
+
       
 
       input_option = gets.chomp 
@@ -35,9 +38,9 @@ class Frontend
       
 
       if input_option == '1'
-        product_index_action
+        locations_index_action
       elsif input_option == '1.1'
-        products_search_action
+        locations_search_action
 
       elsif input_option == '1.2'
         response = Unirest.get("http://localhost:3000/locations/?sort=name")
@@ -50,15 +53,19 @@ class Frontend
         puts JSON.pretty_generate(locations)
 
       elsif input_option == '2'
-        products_show_action
+        locations_show_action
         
       elsif input_option == '3'
-        products_create_action
+        locations_create_action
 
       elsif input_option == '4'
-        products_update_action
+        locations_update_action
       elsif input_option == '5'
-       products_destroy_action
+       locations_destroy_action
+      elsif input_option == '6'
+        user_locations_hashs = Unirest.get("http://localhost:3000/user_locations")   
+        puts JSON.pretty_generate(user_locations_hashs)     
+
       elsif input_option == 'signup'
         puts "Signup for a  new account"
         puts 
