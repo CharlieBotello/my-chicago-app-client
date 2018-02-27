@@ -48,7 +48,7 @@ module ProductsController
       end 
     end
   end
-  def prooducts_update_action
+  def products_update_action
     puts 'Please enter an id: '
     input_id = gets.chomp
     response = Unirest.get("http://localhost:3000/locations/#{input_id}")

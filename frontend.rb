@@ -56,7 +56,7 @@ class Frontend
         products_create_action
 
       elsif input_option == '4'
-        prooducts_update_action
+        products_update_action
       elsif input_option == '5'
        products_destroy_action
       elsif input_option == 'signup'
