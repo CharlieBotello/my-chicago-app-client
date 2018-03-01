@@ -1,4 +1,5 @@
 module LocationsController
+
   def locations_index_action
     response = Unirest.get("http://localhost:3000/locations")
     locations = response.body 
@@ -15,9 +16,9 @@ module LocationsController
 
     user_choice = gets.chomp
     if user_choice == 'o'
-      print "Enter a start date to add to your planner (example January, 31 2017 12:30pm): "
+      print "Enter a start date to add to your planner (example 03/01/2018 13:52): "
       input_start = gets.chomp
-      print "Enter an end time to your planner (example January, 31 2017 2:30pm): "
+      print "Enter an end time to your planner (example 03/01/2018 13:52): "
       input_end = gets.chomp
 
       client_params = {
@@ -25,8 +26,13 @@ module LocationsController
                         end_time: input_end,
                         location_id: input_id
                       }
-      response_data = Unirest.post("http://localhost:3000/user_locations",  client_params)
-      puts JSON.pretty_generate(response_data)
+      response_data = Unirest.post("http://localhost:3000/user_locations", parameters:  client_params)
+      
+      if response.code == 200
+        puts JSON.pretty_generate(response_data.body)
+      elsif response.code == 401 
+        puts "Must be logged id to add a location to your planner"
+      end
     end
   end
 
@@ -55,9 +61,10 @@ module LocationsController
                             )
     # response = Unirest.post("http://localhost:3000/locations", parameters: client_params)
     if response.code == 200
-      location = response.body 
+      location = response.body
       puts JSON.pretty_generate(location)
-    else 
+      # locations_show_view(location)
+    elsif response.code == 422 
       errors = response.body 
       puts "Your location was not created: "
       puts "Here are the reasons why: "
@@ -65,6 +72,8 @@ module LocationsController
       errors.each do |error|
         puts error
       end 
+    elsif response.code == 401
+      puts JSON.pretty_generate(response.body)
     end
   end
   def locations_update_action
@@ -97,9 +106,9 @@ module LocationsController
                                                                 parameters: client_params
                             )
     if response.code == 200 
-      updated_location = response.body 
-      puts JSON.pretty_generate(updated_location)
-    else 
+      product = response.body
+      puts JSON.pretty_generate(product)
+    elsif response.code == 422
       errors = response.body
       puts "Your location did not update "
       puts "Here are the reasons why: "
@@ -107,11 +116,14 @@ module LocationsController
       errors.each do |error|
         puts error
       end 
+    elsif response.code == 401
+      puts "you are not authorized"
     end 
   end
   def locations_destroy_action
     print "Enter recipe Id: "
     input_id = gets.chomp
+
     response = Unirest.delete("http://localhost:3000/locations/#{input_id}")
     data = response.body
     puts data["message"]

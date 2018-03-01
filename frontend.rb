@@ -1,6 +1,8 @@
 require 'unirest'
 require 'paint'
-require_relative 'controllers/products_controller'
+require_relative 'controllers/locations_controller'
+
+
 class Frontend
   include LocationsController
   def run 
@@ -63,8 +65,16 @@ class Frontend
       elsif input_option == '5'
        locations_destroy_action
       elsif input_option == '6'
-        user_locations_hashs = Unirest.get("http://localhost:3000/user_locations")   
-        puts JSON.pretty_generate(user_locations_hashs)     
+        # user_locations_hashs = Unirest.get("http://localhost:3000/user_locations")
+        response = Unirest.get("http://localhost:3000/user_locations")
+
+        if response.code == 200
+          puts JSON.pretty_generate(response.body)
+        elsif response.code == 401
+          
+          puts "Unable to retrieve list of user locations, until you are signed in "
+        end   
+        # puts JSON.pretty_generate(user_locations_hashs)     
 
       elsif input_option == 'signup'
         puts "Signup for a  new account"
