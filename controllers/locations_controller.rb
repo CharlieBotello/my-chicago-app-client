@@ -4,13 +4,36 @@ module LocationsController
     response = Unirest.get("http://localhost:3000/locations")
     locations = response.body 
     puts JSON.pretty_generate(locations) 
+
+    # response = Unirest.get("https://data.cityofchicago.org/resource/fpx9-pjqk.json")
+    # locations = response.body
+
+    # locations.each do |location|
+    #   puts "ID: #{location['id']}"
+    #   puts "Name: #{location['landmark_name']}"
+    #   puts "Year built: #{location['date_built']}"
+    #   puts ""
+    #   puts "Adress: #{location['address']}"
+    #   puts "Latitude: #{location['latitude']}"
+    #   puts "Longitude: #{location['longitude']} "
+    #   puts ""
+    #   puts "-" * 50
+    #   puts ""
+    # end
   end
+
+
+
   def locations_show_action
     print "Enter a location id: "
     input_id = gets.chomp
     response = Unirest.get("http://localhost:3000/locations/#{input_id}")
     location = response.body
     puts JSON.pretty_generate(location)
+
+
+
+
 
     puts "Press enter to continue or type 'o' to add the location to your planner"
 
